@@ -1,4 +1,4 @@
-package humming.bird.sprinkler;
+package humming.bee.sprinkler.service;
 
 public class SprinklerGroup {
 
