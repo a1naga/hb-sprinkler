@@ -1,33 +1,39 @@
 package humming.bee.sprinkler.ui;
 
-import java.awt.*;
-import javax.swing.UIManager.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.*;
-
-import javax.swing.text.*;
-
-import humming.bee.sprinkler.db.SprinklerDb;
-import humming.bee.sprinkler.service.Sprinkler;
-import humming.bee.sprinkler.service.SprinklerService;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+
+import humming.bee.sprinkler.service.Sprinkler;
+import humming.bee.sprinkler.service.SprinklerService;
 
 public class HomeScreen {
 
@@ -213,7 +219,7 @@ public class HomeScreen {
 
 		List<Sprinkler> sprinklerList = new ArrayList<Sprinkler>();
 		SprinklerService service = new SprinklerService();
-		sprinklerList = service.callToDatabase();
+		sprinklerList = service.getStatus();
 		ImageIcon iconOn = new ImageIcon(getClass().getResource("/res/ON.png"));
 		ImageIcon iconOff = new ImageIcon(getClass().getResource("/res/off.png"));
 		ImageIcon iconNotWorking = new ImageIcon(getClass().getResource("/res/not-working.png"));
