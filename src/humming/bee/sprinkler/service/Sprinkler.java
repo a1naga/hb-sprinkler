@@ -7,6 +7,7 @@ public class Sprinkler {
 	private int groupId;
 	private String sprinklerStatus;
 	private double volumeOfWater;
+	private boolean functional;
 
 	public int getSprinklerId() {
 		return sprinklerId;
@@ -47,11 +48,20 @@ public class Sprinkler {
 	public void setSprinklerName(String sprinklerName) {
 		this.sprinklerName = sprinklerName;
 	}
+	
+	public boolean isFunctional()
+	{
+		return functional;
+	}
+	
+	public void setFunctional(boolean functional) {
+		this.functional = functional;
+	}
 
 	@Override
 	public String toString() {
 		return "Sprinkler [sprinklerId=" + sprinklerId + ", sprinklerName=" + sprinklerName + ", groupId=" + groupId
-				+ ", sprinklerStatus=" + sprinklerStatus + ", volumeOfWater=" + volumeOfWater + "\n"+ "]";
+				+ ", sprinklerStatus=" + sprinklerStatus + ", volumeOfWater=" + volumeOfWater +", functional=" + functional+ "\n"+ "]";
 	}
 
 }
