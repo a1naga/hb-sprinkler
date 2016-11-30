@@ -292,12 +292,7 @@ public class HomeScreen {
 			 * btnSprinkler.setContentAreaFilled(false);
 			 * btnSprinkler.setOpaque(false);
 			 */
-			btnSprinkler.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					configFrame.setVisible(true);
-					configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				}
-			});
+			
 			// iconON
 			JLabel statusSpklr = new JLabel();
 			// statusSpklr.setText(sprinklerList.get(i).getSprinklerStatus());
@@ -342,12 +337,7 @@ public class HomeScreen {
 
 			JButton btnSprinkler = new JButton(eastList.get(i).getSprinklerName());
 			btnSprinkler.setOpaque(false);
-			btnSprinkler.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					configFrame.setVisible(true);
-					configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				}
-			});
+			
 
 			JLabel statusSpklr = new JLabel();
 			if (eastList.get(i).isFunctional()) {
@@ -389,13 +379,8 @@ public class HomeScreen {
 			// 128,255,128
 
 			JButton btnSprinkler = new JButton(westList.get(i).getSprinklerName());
-			btnSprinkler.setOpaque(false);
-			btnSprinkler.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					configFrame.setVisible(true);
-					configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				}
-			});
+			btnSprinkler.setOpaque(true);
+	
 			JLabel statusSpklr = new JLabel();
 			if (westList.get(i).isFunctional()) {
 				if (westList.get(i).getSprinklerStatus().equals("ON")) {
@@ -435,12 +420,6 @@ public class HomeScreen {
 
 			JButton btnSprinkler = new JButton(southList.get(i).getSprinklerName());
 			btnSprinkler.setOpaque(true);
-			btnSprinkler.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					configFrame.setVisible(true);
-					configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				}
-			});
 
 			JLabel statusSpklr = new JLabel();
 			if (southList.get(i).isFunctional()) {
