@@ -15,7 +15,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -37,6 +39,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import humming.bee.sprinkler.service.GroupRunDuration;
 import humming.bee.sprinkler.service.OverrideTemperatureConfiguration;
 import humming.bee.sprinkler.service.Sprinkler;
 import humming.bee.sprinkler.service.SprinklerGroup;
@@ -56,18 +59,22 @@ public class HomeScreen {
 	private JPanel eastPane;
 	private JPanel westPane;
 	private JPanel southPane;
+	private JTabbedPane graphPane; 
 
-	List<Sprinkler> sprinklerList = new ArrayList<Sprinkler>();
+	List<Sprinkler> sprinklerList;
 	List<Sprinkler> northList = new ArrayList<Sprinkler>();
 	List<Sprinkler> eastList = new ArrayList<Sprinkler>();
 	List<Sprinkler> southList = new ArrayList<Sprinkler>();
 	List<Sprinkler> westList = new ArrayList<Sprinkler>();
-	List<SprinklerGroup> groupList = new ArrayList<SprinklerGroup>();
-	OverrideTemperatureConfiguration tempConfig;
+	List<SprinklerGroup> groupList;
+	List<GroupRunDuration> groupRunDurationList;
+
+	SprinklerService service = new SprinklerService();
 
 	ImageIcon iconOn = new ImageIcon(getClass().getResource("/res/ON.png"));
 	ImageIcon iconOff = new ImageIcon(getClass().getResource("/res/off.png"));
 	ImageIcon iconNotWorking = new ImageIcon(getClass().getResource("/res/not-working.png"));
+	Color[] colors = new Color[]{Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.BLACK, Color.GRAY, Color.ORANGE};
 
 	/**
 	 * Launch the application.
@@ -107,8 +114,6 @@ public class HomeScreen {
 	 * Create the application.
 	 */
 	public HomeScreen() {
-
-		tempConfig = new OverrideTemperatureConfiguration();
 		getData();
 		initialize();
 		Timer timer = new Timer(10000, new ActionListener() {
@@ -126,14 +131,16 @@ public class HomeScreen {
 		getData();
 		statusPane.removeAll();
 		createGroupPanes();
-		statusPane.getParent().revalidate();
+		//statusPane.getParent().revalidate();
+		graphPane.removeAll();
+		addBarToGraph();
+		frame.revalidate();
 	}
 
 	private void getData() {
-
-		SprinklerService service = new SprinklerService();
 		sprinklerList = service.getSprinkler();
 		groupList = service.getGroup();
+		groupRunDurationList = service.getGroupRunDuration();
 		northList.clear();
 		eastList.clear();
 		westList.clear();
@@ -148,11 +155,7 @@ public class HomeScreen {
 			} else if (sprinklerList.get(i).getGroupId() == 40) {
 				southList.add(sprinklerList.get(i));
 			}
-
 		}
-
-		service.setTemperatureConfiguration(tempConfig);
-
 	}
 
 	/**
@@ -464,67 +467,45 @@ public class HomeScreen {
 	 */
 	private void waterConsumptionGraph() {
 
-		JTabbedPane GraphPane = new JTabbedPane();
-		GraphPane.setPreferredSize(new Dimension(150, 350));
-		GraphPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-
-		JPanel SprinklerSystemGraphPane = new JPanel();
-		JPanel SprinklerGroupGraphPane = new JPanel();
-		JPanel SprinklerGraphPane = new JPanel();
-
+		graphPane = new JTabbedPane();
+		graphPane.setPreferredSize(new Dimension(150, 350));
+		graphPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		// SprinklerSystemGraphPane.setPreferredSize(new Dimension(150, 300));
-		GraphPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 102, 0), 2), "Water Consumption Graph",
+		graphPane.setBorder(new TitledBorder(new LineBorder(new Color(0, 102, 0), 2), "Water Consumption Graph",
 				TitledBorder.CENTER, TitledBorder.TOP, null, null));
-
-		// JComboBox with vector values Sprinkler, Sprinkler Group, Sprinkler
-		// System
-		/*
-		 * Vector<String> v = new Vector<String>();
-		 * 
-		 * v.add("Sprinkler System"); v.add("Sprinkler");
-		 * v.add("SprinklerGroup");
-		 * 
-		 * Select = new JComboBox<String>(v); Select.setPreferredSize(new
-		 * Dimension(120,30));
-		 */
-		HistogramGraph panel = new HistogramGraph();
-		panel.addHistogramColumn("N1", 350, Color.RED);
-		panel.addHistogramColumn("N2", 690, Color.RED);
-		panel.addHistogramColumn("N3", 510, Color.RED);
-		panel.addHistogramColumn("N4", 570, Color.RED);
-		panel.addHistogramColumn("N5", 180, Color.RED);
-		panel.addHistogramColumn("N6", 504, Color.RED);
-		panel.addHistogramColumn("S1", 350, Color.YELLOW);
-		panel.addHistogramColumn("S2", 690, Color.YELLOW);
-		panel.addHistogramColumn("S3", 510, Color.YELLOW);
-		panel.addHistogramColumn("S4", 570, Color.YELLOW);
-		panel.addHistogramColumn("S5", 180, Color.YELLOW);
-		panel.addHistogramColumn("S6", 504, Color.CYAN);
-		panel.addHistogramColumn("S1", 350, Color.YELLOW);
-		panel.addHistogramColumn("S2", 690, Color.YELLOW);
-		panel.addHistogramColumn("S3", 510, Color.YELLOW);
-		panel.addHistogramColumn("S4", 570, Color.YELLOW);
-		panel.addHistogramColumn("S5", 180, Color.YELLOW);
-		panel.addHistogramColumn("S6", 504, Color.CYAN);
-		panel.addHistogramColumn("S1", 350, Color.YELLOW);
-		panel.addHistogramColumn("S2", 690, Color.YELLOW);
-		panel.addHistogramColumn("S3", 510, Color.YELLOW);
-		panel.addHistogramColumn("S4", 570, Color.YELLOW);
-		panel.addHistogramColumn("S5", 180, Color.YELLOW);
-		panel.addHistogramColumn("S6", 504, Color.CYAN);
-		panel.layoutHistogram();
-
-		GraphPane.add(new JScrollPane(SprinklerSystemGraphPane), "Sprinkler system");
-		// GraphPane.setMnemonicAt(0, KeyEvent.VK_1)
-		GraphPane.add(new JScrollPane(SprinklerGroupGraphPane), "Sprinkler Group");
-		GraphPane.add(new JScrollPane(SprinklerGraphPane), "Sprinkler");
-		SprinklerGraphPane.add(panel);
-		// SprinklerSystemGraphPane.add(chart);
-
-		frame.add(GraphPane, BorderLayout.SOUTH);
-
+		addBarToGraph();
+		frame.add(graphPane, BorderLayout.SOUTH);
 	}
 
+	private void addBarToGraph() {
+		Map<Integer, List<GroupRunDuration>> groupMap = new HashMap<Integer, List<GroupRunDuration>>();
+		for (GroupRunDuration groupRunDuration : groupRunDurationList) {
+			if (!groupMap.containsKey(groupRunDuration.getGroupId())) {
+				groupMap.put(groupRunDuration.getGroupId(), new ArrayList<GroupRunDuration>());
+			}
+			groupMap.get(groupRunDuration.getGroupId()).add(groupRunDuration);
+		}
+		
+		for (SprinklerGroup group : groupList) {
+			String groupName = group.getGroupName();
+			JPanel sprinklerGroupPane = new JPanel();
+			graphPane.add(new JScrollPane(sprinklerGroupPane), groupName);
+			List<GroupRunDuration> groupDurationList = groupMap.get(group.getGroupId());
+			HistogramGraph panel = new HistogramGraph();
+			int i = 0;
+			for (GroupRunDuration groupRunDuration : groupDurationList) {
+				panel.addHistogramColumn(Integer.toString(groupRunDuration.getDay()), 
+						calculateVolume(groupRunDuration.getDurationInSeconds()), colors[i++%colors.length]);
+			}
+			panel.layoutHistogram();
+			sprinklerGroupPane.add(panel);
+		}
+	}
+	
+	private double calculateVolume(long duration) {
+		return new Double(duration) * 0.05;
+	}
+	
 	// Panel for temperature Settings with Flowlayout and it has 3 buttons
 	private void buttonPane() {
 		functionalityPane = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 20));
@@ -533,21 +514,21 @@ public class HomeScreen {
 		functionalityPane.setBorder(new LineBorder(new Color(0, 102, 0), 2, true));
 
 		JPanel overrideTemp = new JPanel();
-		overrideTemp.setLayout(new GridLayout(0, 9));
-		overrideTemp.setPreferredSize(new Dimension(500, 100));
-		int groupId[] = new int[4];
-		overrideTemp.add(new JLabel("Select Group"));
+		overrideTemp.setLayout(new GridLayout(3, 0));
+		overrideTemp.setPreferredSize(new Dimension(550, 100));
+
+		JLabel lblSelectGrp = new JLabel("Select Group");
+		lblSelectGrp.setPreferredSize(new Dimension(150,20));
 		Vector<String> vg = new Vector<String>();
 		vg.add("North");
 		vg.add("South");
 		vg.add("East");
 		vg.add("West");
 		JComboBox<String> selectGroup = new JComboBox<String>(vg);
-
+		selectGroup.setPreferredSize(new Dimension(150,20));
+		overrideTemp.add(lblSelectGrp);
 		overrideTemp.add(selectGroup);
-		overrideTemp.add(new JLabel(""));
-		overrideTemp.add(new JLabel(""));
-		overrideTemp.add(new JLabel(""));
+
 		overrideTemp.add(new JLabel(""));
 		overrideTemp.add(new JLabel(""));
 		overrideTemp.add(new JLabel(""));
@@ -561,12 +542,10 @@ public class HomeScreen {
 		overrideTemp.add(new JLabel("Frequency"));
 		JTextField frequency = new JTextField();
 		overrideTemp.add(frequency);
-		overrideTemp.add(new JLabel("times for"));
 
 		overrideTemp.add(new JLabel("Duration"));
 		JTextField duration = new JTextField();
 		overrideTemp.add(duration);
-		overrideTemp.add(new JLabel("mins"));
 
 		overrideTemp.add(new JLabel("Lower_Limit"));
 		JTextField lowerLimit = new JTextField();
@@ -576,7 +555,6 @@ public class HomeScreen {
 		btnOverrideButton = new JButton("Temperature Setting");
 		btnOverrideButton.setActionCommand("");
 		btnOverrideButton.setPreferredSize(new Dimension(180, 50));
-		// btnOverrideButton.setBackground(new Color(128, 255, 128));
 		btnOverrideButton.setOpaque(true);
 		btnOverrideButton.setBorderPainted(false);
 
@@ -595,9 +573,7 @@ public class HomeScreen {
 							tempConfig.setGroupId(groupList.get(i).getGroupId());
 						}
 					}
-					// JOptionPane.showMessageDialog(null, "Price is : " +
-					// Double.toString(price), "Price : ",
-					// JOptionPane.PLAIN_MESSAGE);
+					service.setTemperatureConfiguration(tempConfig);
 				} else if (result == JOptionPane.CANCEL_OPTION) {
 
 				}
@@ -621,6 +597,7 @@ public class HomeScreen {
 			public void mouseClicked(MouseEvent e) {
 				int result = JOptionPane.showConfirmDialog(null, changeTemperature, "Change Temperature",
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+				System.out.println(result);
 			}
 		});
 		functionalityPane.add(btnSetTemp);
@@ -632,8 +609,8 @@ public class HomeScreen {
 		btnNextScreen.setBorderPainted(false);
 		btnNextScreen.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				configFrame.setVisible(true);
-				configFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				//frame.dispose();
+				Settings settings = new Settings();
 			}
 		});
 		functionalityPane.add(btnNextScreen);

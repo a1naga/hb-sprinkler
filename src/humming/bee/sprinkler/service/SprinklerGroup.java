@@ -35,14 +35,13 @@ public class SprinklerGroup {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-}
 	
 	
 	/**
 	 * Calls the method to Get sprinkler-group by group name
 	 * @param groupName
 	 * @param status
-	 
+	 */
 	public SprinklerGroup getSprinklerGroupByName(String groupName)
 	{
 		return dbService.getSprinklerGroupByName(groupName);
@@ -53,10 +52,10 @@ public class SprinklerGroup {
 	 * Calls method to Update status of a sprinkler-group (on/off) to database
 	 * @param groupName
 	 * @param status
-	 
+	 */
 	public void updateSprinklerGroupStatus(String groupName,String status)
 	{
 		dbService.updateSprinklerGroupStatus(groupName, status);
 	}
 
-}**/
+}

@@ -2,13 +2,13 @@ package humming.bee.sprinkler.service;
 
 public class TemperatureSensor {
 
-	private int currentTempearture = 75;
+	private static int currentTemperature = 75;
 
-	public int getCurrentTempearture() {
-		return currentTempearture;
+	public static int getCurrentTemperature() {
+		return currentTemperature;
 	}
 
-	public void setCurrentTempearture(int currentTempearture) {
-		this.currentTempearture = currentTempearture;
+	public static void setCurrentTemperature(int currentTemperature) {
+		currentTemperature = currentTemperature;
 	}
 }

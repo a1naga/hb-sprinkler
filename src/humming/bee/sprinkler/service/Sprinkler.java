@@ -1,5 +1,7 @@
 package humming.bee.sprinkler.service;
 
+import java.util.Date;
+
 public class Sprinkler {
 
 	private int sprinklerId;
@@ -8,6 +10,8 @@ public class Sprinkler {
 	private String sprinklerStatus;
 	private double volumeOfWater;
 	private boolean functional;
+	private long duration;
+	private Date lastUpdateTime;
 
 	public int getSprinklerId() {
 		return sprinklerId;
@@ -62,6 +66,22 @@ public class Sprinkler {
 	public String toString() {
 		return "Sprinkler [sprinklerId=" + sprinklerId + ", sprinklerName=" + sprinklerName + ", groupId=" + groupId
 				+ ", sprinklerStatus=" + sprinklerStatus + ", volumeOfWater=" + volumeOfWater +", functional=" + functional+ "\n"+ "]";
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
 }

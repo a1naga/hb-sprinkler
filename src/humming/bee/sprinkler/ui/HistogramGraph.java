@@ -19,7 +19,7 @@ import javax.swing.border.MatteBorder;
 
 public class HistogramGraph extends JPanel
 {
-    private int histogramHeight = 300;
+    private int histogramHeight = 270;
     private int barWidth = 50;
     private int barGap = 10;
 
@@ -38,7 +38,7 @@ public class HistogramGraph extends JPanel
         Border inner = new EmptyBorder(10, 10, 0, 10);
         Border compound = new CompoundBorder(outer, inner);
         barPanel.setBorder(compound);
-        barPanel.setPreferredSize(new Dimension(400, 350));
+        barPanel.setPreferredSize(new Dimension(400, 270));
 
         labelPanel = new JPanel( new GridLayout(1, 0, barGap, 0) );
         labelPanel.setBorder( new EmptyBorder(5, 10, 0, 10) );
@@ -58,11 +58,14 @@ public class HistogramGraph extends JPanel
         barPanel.removeAll();
         labelPanel.removeAll();
 
-        int maxValue = 100;
+        double maxValue = 0;
+        for (Bar bar: bars)
+            maxValue = Math.max(maxValue, bar.getValue());
+        maxValue = maxValue + 500;
 
         for (Bar bar: bars)
         {
-            JLabel label = new JLabel( String.format("%.2f", bar.getValue()) + "%");
+            JLabel label = new JLabel( String.format("%.2f", bar.getValue()));
             label.setHorizontalTextPosition(JLabel.CENTER);
             label.setHorizontalAlignment(JLabel.CENTER);
             label.setVerticalTextPosition(JLabel.TOP);

@@ -31,101 +31,129 @@ public class SprinklerService {
 		 dbService.setTemperatureConfiguration(tempConfiguration);
 	}
 	
-
-	// System.out.println(dbService.getAllStatus());
-
-	/*
-	 * public void getStatus(int sprinklerId, int groupId);
-	 * 
-	 * public void getGroupStatus(String groupId) {
-	 * 
-	 * }
-	 * 
-	 * public List<SprinklerGroupConfiguration> getGroupConfiguration(String
-	 * groupId) { return null; }
-	 * 
-	 * public void updateGroupConfiguration(List<SprinklerGroupConfiguration>
-	 * sprinklerList) {
-	 * 
-	 * }
-	 * 
-	 * public List<SprinklerConfiguration> getSprinklerConfiguraion(String
-	 * SprinklerId, String groupId) { return null; }
-	 * 
-	 * public void updateSprinklerConfiguration(List<SprinklerConfiguration>
-	 * sprinklerList) {
-	 * 
-	 * }
-	 * 
-	 * public TemperatureConfiguration temperatureConfiguration() { return null;
-	 * }
-	 */
-	/*
-	 * public void overrideTemperature(TemperatureConfiguration tempConfig) {
-	 * 
-	 * }
-	 * 
-	 * public void updateTemperature() {
-	 * 
-	 * }
-	 * 
-	 * public double getGroupWaterConsumption(String groupId) { return 0.0; }
-	 * 
-	 * public double getSprinklerWaterConsumption(String sprinklerId) { return
-	 * 0.0; }
-	 */
+	public List<GroupRunDuration> getGroupRunDuration() {
+		return dbService.getGroupRunDuration();
+	}
+	
 
 	/**
 	 * Calls the method to Get all sprinklers by Group name
-	 * 
 	 * @param groupName
 	 * @return List
 	 */
-	public List<Sprinkler> getSprinklersByGroup(String groupName) {
+	public List<Sprinkler> getSprinklersByGroup(String groupName)
+	{
 		return dbService.getSprinklersByGroup(groupName);
-
+	
 	}
-
+	
 	/**
 	 * Calls the method to Get details of a sprinkler
-	 * 
 	 * @param sprinklerName
 	 * @return Sprinkler
 	 */
-	public Sprinkler getSprinklerByName(String sprinklerName) {
+	public Sprinkler getSprinklerByName(String sprinklerName)
+	{
 		return dbService.getSprinklerByName(sprinklerName);
 	}
-
+	
 	/**
 	 * Calls the method to update sprinkler status to database
-	 * 
 	 * @param sprinklerName
 	 * @param status
 	 */
-	public void updateSprinklerStatus(String sprinklerName, String status) {
+	public void updateSprinklerStatus(String sprinklerName,String status)
+	{
 		dbService.updateSprinklerStatus(sprinklerName, status);
 	}
-
+	
 	/**
 	 * calls method to Update sprinkler to functional/not-functional
-	 * 
 	 * @param sprinklerName
 	 * @param functional
 	 */
-	public void updateSprinklerFunctional(String sprinklerName, int functional) {
-		dbService.updateSprinklerFunctional(sprinklerName, functional);
+	public void updateSprinklerFunctional(String sprinklerName,int functional)
+	{
+		dbService.updateSprinklerFunctional(sprinklerName,functional);
 	}
-
-	// ***********************sprinkler configuration*******************
-
-	public List<SprinklerConfiguration> getSprinklerConfigurationByDay(int sprinklerId, String day) {
+	
+	
+	//***********************sprinkler configuration*******************
+	
+	public List<SprinklerConfiguration> getSprinklerConfigurationByDay(int sprinklerId,String day)
+	{	
 		return dbService.getSprinklerConfigurationByDay(sprinklerId, day);
 	}
-
-	public int deleteSprinklerConfigById(int sConfigId) {
+	
+	public int deleteSprinklerConfigById(int sConfigId)
+	{
 		return dbService.deleteSprinklerConfigById(sConfigId);
 	}
-
-	// ******************************************************************
-
+	
+	public boolean isSprinklerConfigExist(SprinklerConfiguration sConfig)
+	{
+		return dbService.isSprinklerConfigExist(sConfig);
+	}
+	
+	
+	//******************************************************************
+	
+	
+	
+	//***********************group configuration*******************
+	
+	public List<SprinklerGroupConfiguration> getGroupConfigurationByDay(int groupId,String day)
+	{	
+		return dbService.getGroupConfigurationByDay(groupId, day);
+	}
+	
+	public int deleteGroupConfigById(int sConfigId)
+	{
+		return dbService.deleteGroupConfigById(sConfigId);
+	}
+	
+	public boolean isGroupConfigExist(SprinklerGroupConfiguration gConfig)
+	{
+		return dbService.isGroupConfigExist(gConfig);
+	}
+	
+	//**********************************************************************
+	
+	
+	//*************************sprinkler run time************************
+	
+	public int addSprinklerRunTime(int sprinklerId)
+	{
+		return dbService.addSprinklerRunTime(sprinklerId);
+	}
+	
+	public void updateSprinklerRunTime(int runTimeId)
+	{
+		dbService.updateSprinklerRunTime(runTimeId);
+	}
+	
+	public SprinklerRunTime getSprinklerRunTimeToUpdate(int sprinklerId)
+	{
+		return dbService.getSprinklerRunTimeToUpdate(sprinklerId);
+	}
+	
+	//******************************************************************
+	
+	//***********************sprinkler group run time*******************
+	
+	public int addGroupRunTime(int groupId)
+	{
+		return dbService.addGroupRunTime(groupId);
+	}
+	
+	public void updateGroupRunTime(int gRunTimeId)
+	{
+		dbService.updateGroupRunTime(gRunTimeId);
+	}
+	
+	public SprinklerGroupRunTime getGroupRunTimeToUpdate(int groupId)
+	{
+		return dbService.getGroupRunTimeToUpdate(groupId);
+	}
+	
 }
