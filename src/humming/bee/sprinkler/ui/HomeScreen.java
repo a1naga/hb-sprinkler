@@ -44,6 +44,7 @@ import humming.bee.sprinkler.service.OverrideTemperatureConfiguration;
 import humming.bee.sprinkler.service.Sprinkler;
 import humming.bee.sprinkler.service.SprinklerGroup;
 import humming.bee.sprinkler.service.SprinklerService;
+import humming.bee.sprinkler.service.TemperatureSensor;
 
 public class HomeScreen {
 
@@ -59,7 +60,8 @@ public class HomeScreen {
 	private JPanel eastPane;
 	private JPanel westPane;
 	private JPanel southPane;
-	private JTabbedPane graphPane; 
+	private JLabel lblWeather;
+	private JTabbedPane graphPane;
 
 	List<Sprinkler> sprinklerList;
 	List<Sprinkler> northList = new ArrayList<Sprinkler>();
@@ -74,7 +76,8 @@ public class HomeScreen {
 	ImageIcon iconOn = new ImageIcon(getClass().getResource("/res/ON.png"));
 	ImageIcon iconOff = new ImageIcon(getClass().getResource("/res/off.png"));
 	ImageIcon iconNotWorking = new ImageIcon(getClass().getResource("/res/not-working.png"));
-	Color[] colors = new Color[]{Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.BLACK, Color.GRAY, Color.ORANGE};
+	Color[] colors = new Color[] { Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN, Color.BLACK,
+			Color.GRAY, Color.ORANGE };
 
 	/**
 	 * Launch the application.
@@ -131,7 +134,7 @@ public class HomeScreen {
 		getData();
 		statusPane.removeAll();
 		createGroupPanes();
-		//statusPane.getParent().revalidate();
+		// statusPane.getParent().revalidate();
 		graphPane.removeAll();
 		addBarToGraph();
 		frame.revalidate();
@@ -225,9 +228,10 @@ public class HomeScreen {
 		lblTime.setIconTextGap(5);
 		lblTime.setBorder(border);
 		titlePane.add(lblTime);
-
+		String temp = Integer.toString(TemperatureSensor.getCurrentTemperature());
 		ImageIcon weather = new ImageIcon(getClass().getResource("/res/Weather-icon.png"));
-		JLabel lblWeather = new JLabel("57 ° F");
+		lblWeather = new JLabel();
+		lblWeather.setText(temp + "˚F");
 		lblWeather.setIcon(weather);
 		lblWeather.setIconTextGap(5);
 		lblWeather.setBorder(border);
@@ -485,27 +489,28 @@ public class HomeScreen {
 			}
 			groupMap.get(groupRunDuration.getGroupId()).add(groupRunDuration);
 		}
-		
-		for (SprinklerGroup group : groupList) {
-			String groupName = group.getGroupName();
-			JPanel sprinklerGroupPane = new JPanel();
-			graphPane.add(new JScrollPane(sprinklerGroupPane), groupName);
-			List<GroupRunDuration> groupDurationList = groupMap.get(group.getGroupId());
-			HistogramGraph panel = new HistogramGraph();
-			int i = 0;
-			for (GroupRunDuration groupRunDuration : groupDurationList) {
-				panel.addHistogramColumn(Integer.toString(groupRunDuration.getDay()), 
-						calculateVolume(groupRunDuration.getDurationInSeconds()), colors[i++%colors.length]);
+		if (groupList != null && !groupList.isEmpty()) {
+			for (SprinklerGroup group : groupList) {
+				String groupName = group.getGroupName();
+				JPanel sprinklerGroupPane = new JPanel();
+				graphPane.add(new JScrollPane(sprinklerGroupPane), groupName);
+				List<GroupRunDuration> groupDurationList = groupMap.get(group.getGroupId());
+				HistogramGraph panel = new HistogramGraph();
+				int i = 0;
+				for (GroupRunDuration groupRunDuration : groupDurationList) {
+					panel.addHistogramColumn(Integer.toString(groupRunDuration.getDay()),
+							calculateVolume(groupRunDuration.getDurationInSeconds()), colors[i++ % colors.length]);
+				}
+				panel.layoutHistogram();
+				sprinklerGroupPane.add(panel);
 			}
-			panel.layoutHistogram();
-			sprinklerGroupPane.add(panel);
 		}
 	}
-	
+
 	private double calculateVolume(long duration) {
 		return new Double(duration) * 0.05;
 	}
-	
+
 	// Panel for temperature Settings with Flowlayout and it has 3 buttons
 	private void buttonPane() {
 		functionalityPane = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 20));
@@ -518,14 +523,14 @@ public class HomeScreen {
 		overrideTemp.setPreferredSize(new Dimension(550, 100));
 
 		JLabel lblSelectGrp = new JLabel("Select Group");
-		lblSelectGrp.setPreferredSize(new Dimension(150,20));
+		lblSelectGrp.setPreferredSize(new Dimension(150, 20));
 		Vector<String> vg = new Vector<String>();
 		vg.add("North");
 		vg.add("South");
 		vg.add("East");
 		vg.add("West");
 		JComboBox<String> selectGroup = new JComboBox<String>(vg);
-		selectGroup.setPreferredSize(new Dimension(150,20));
+		selectGroup.setPreferredSize(new Dimension(150, 20));
 		overrideTemp.add(lblSelectGrp);
 		overrideTemp.add(selectGroup);
 
@@ -559,14 +564,20 @@ public class HomeScreen {
 		btnOverrideButton.setBorderPainted(false);
 
 		btnOverrideButton.addMouseListener(new MouseAdapter() {
+
 			public void mouseClicked(MouseEvent e) {
 				int result = JOptionPane.showConfirmDialog(null, overrideTemp, "Temperature Setting",
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 				OverrideTemperatureConfiguration tempConfig = new OverrideTemperatureConfiguration();
 				if (result == JOptionPane.OK_OPTION) {
+					String freq = frequency.getText();
+					String dur = duration.getText();
 					tempConfig.setTempUpperLimit(Integer.valueOf(upperLimit.getText()));
-					tempConfig.setFrequency(Integer.valueOf(frequency.getText()));
-					tempConfig.setDuration(Integer.valueOf(duration.getText()));
+					if (freq != null && !freq.isEmpty())
+						tempConfig.setFrequency(Integer.valueOf(freq));
+
+					if (dur != null && !dur.isEmpty())
+						tempConfig.setDuration(Integer.valueOf(dur));
 					tempConfig.setTempLowerLimit(Integer.valueOf(lowerLimit.getText()));
 					for (int i = 0; i < groupList.size(); i++) {
 						if (vg.get(selectGroup.getSelectedIndex()).equals(groupList.get(i).getGroupName())) {
@@ -575,6 +586,9 @@ public class HomeScreen {
 					}
 					service.setTemperatureConfiguration(tempConfig);
 				} else if (result == JOptionPane.CANCEL_OPTION) {
+
+					JOptionPane.showMessageDialog(null, "You have not set any Temperature Limits", "Information",
+							JOptionPane.INFORMATION_MESSAGE);
 
 				}
 			}
@@ -585,7 +599,8 @@ public class HomeScreen {
 		JPanel changeTemperature = new JPanel();
 		changeTemperature.setLayout(new GridLayout(1, 1));
 		changeTemperature.add(new JLabel("Enter the new Temperature"));
-		changeTemperature.add(new JTextField());
+		JTextField changeTemp = new JTextField();
+		changeTemperature.add(changeTemp);
 
 		btnSetTemp = new JButton("Change Temperature");
 		btnSetTemp.setPreferredSize(new Dimension(180, 50));
@@ -597,7 +612,25 @@ public class HomeScreen {
 			public void mouseClicked(MouseEvent e) {
 				int result = JOptionPane.showConfirmDialog(null, changeTemperature, "Change Temperature",
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-				System.out.println(result);
+
+				if (result == JOptionPane.OK_OPTION) {
+					boolean inputAccepted = false;
+					while (!inputAccepted) {
+						try {
+							int newTempValue = Integer.parseInt(changeTemp.getText());
+							inputAccepted = true;
+							lblWeather.setText(Integer.toString(newTempValue) + "˚F");
+
+						} catch (NumberFormatException exception) {
+							JOptionPane.showMessageDialog(null, "Please Enter a Valid Number", "Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					TemperatureSensor.setCurrentTemperature(Integer.parseInt(changeTemp.getText()));
+				} else if (result == JOptionPane.CANCEL_OPTION) {
+					JOptionPane.showMessageDialog(null, "You have not changed the Current Tempearture Value",
+							"Information", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		});
 		functionalityPane.add(btnSetTemp);
@@ -609,7 +642,7 @@ public class HomeScreen {
 		btnNextScreen.setBorderPainted(false);
 		btnNextScreen.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				//frame.dispose();
+				// frame.dispose();
 				Settings settings = new Settings();
 			}
 		});
