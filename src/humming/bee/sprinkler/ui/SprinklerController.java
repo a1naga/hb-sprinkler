@@ -33,7 +33,7 @@ public class SprinklerController extends TimerTask {
 
 	@Override
 	public void run() {
-		double totalRunTime = 0;
+		
 		List<SprinklerGroup> groupList = dbService.getGroup();
 		List<Sprinkler> sprinklerList = dbService.getSprinkler();
 
@@ -80,8 +80,7 @@ public class SprinklerController extends TimerTask {
 								isStatusUpdated = true;
 								break;
 							}
-							totalRunTime = totalRunTime + (sprinklerConfig.getEndTime().getTime()
-									- sprinklerConfig.getStartTime().getTime()) / 1000;
+							
 						}
 					} else {
 						for (SprinklerGroupConfiguration groupConfig : sprinklerGroupConfigList) {
@@ -147,6 +146,7 @@ public class SprinklerController extends TimerTask {
 		for (int i = 0; i < tempConfigurationList.size(); i++) {
 			OverrideTemperatureConfiguration tempConfig = tempConfigurationList.get(i);
 			if (TemperatureSensor.getCurrentTemperature() > tempConfig.getTempUpperLimit()) {
+				System.out.println("Temperature override ON " + tempConfig.getGroupId() );
 				TemperatureUpperLimit freqDuration = new TemperatureUpperLimit();
 				freqDuration.setDuration(tempConfig.getDuration());
 				freqDuration.setFrequency(tempConfig.getFrequency());

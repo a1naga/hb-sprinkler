@@ -143,6 +143,7 @@ public class HomeScreen {
 	private void getData() {
 		sprinklerList = service.getSprinkler();
 		groupList = service.getGroup();
+
 		groupRunDurationList = service.getGroupRunDuration();
 		northList.clear();
 		eastList.clear();
@@ -292,7 +293,7 @@ public class HomeScreen {
 			 * btnSprinkler.setContentAreaFilled(false);
 			 * btnSprinkler.setOpaque(false);
 			 */
-			
+
 			// iconON
 			JLabel statusSpklr = new JLabel();
 			// statusSpklr.setText(sprinklerList.get(i).getSprinklerStatus());
@@ -337,7 +338,6 @@ public class HomeScreen {
 
 			JButton btnSprinkler = new JButton(eastList.get(i).getSprinklerName());
 			btnSprinkler.setOpaque(false);
-			
 
 			JLabel statusSpklr = new JLabel();
 			if (eastList.get(i).isFunctional()) {
@@ -380,7 +380,7 @@ public class HomeScreen {
 
 			JButton btnSprinkler = new JButton(westList.get(i).getSprinklerName());
 			btnSprinkler.setOpaque(true);
-	
+
 			JLabel statusSpklr = new JLabel();
 			if (westList.get(i).isFunctional()) {
 				if (westList.get(i).getSprinklerStatus().equals("ON")) {
@@ -593,23 +593,23 @@ public class HomeScreen {
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
 				if (result == JOptionPane.OK_OPTION) {
-					boolean inputAccepted = false;
-					while (!inputAccepted) {
-						try {
-							int newTempValue = Integer.parseInt(changeTemp.getText());
-							inputAccepted = true;
-							lblWeather.setText(Integer.toString(newTempValue) + "˚F");
 
-						} catch (NumberFormatException exception) {
-							JOptionPane.showMessageDialog(null, "Please Enter a Valid Number", "Error",
-									JOptionPane.ERROR_MESSAGE);
-						}
+					try {
+						int newTempValue = Integer.parseInt(changeTemp.getText());
+
+						lblWeather.setText(Integer.toString(newTempValue) + "˚F");
+						TemperatureSensor.setCurrentTemperature(newTempValue);
+
+					} catch (NumberFormatException exception) {
+
+						JOptionPane.showMessageDialog(null,
+								"You didn't enter a Valid Number. So the temperature is not changed", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+
 					}
-					TemperatureSensor.setCurrentTemperature(Integer.parseInt(changeTemp.getText()));
-				} else if (result == JOptionPane.CANCEL_OPTION) {
-					JOptionPane.showMessageDialog(null, "You have not changed the Current Tempearture Value",
-							"Information", JOptionPane.INFORMATION_MESSAGE);
+
 				}
+
 			}
 		});
 		functionalityPane.add(btnSetTemp);
@@ -620,6 +620,7 @@ public class HomeScreen {
 		btnNextScreen.setOpaque(true);
 		btnNextScreen.setBorderPainted(false);
 		btnNextScreen.addMouseListener(new MouseAdapter() {
+
 			public void mouseClicked(MouseEvent e) {
 				// frame.dispose();
 				Settings settings = new Settings();

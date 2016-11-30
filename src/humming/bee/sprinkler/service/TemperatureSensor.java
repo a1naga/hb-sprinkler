@@ -9,6 +9,6 @@ public class TemperatureSensor {
 	}
 
 	public static void setCurrentTemperature(int currentTemperature) {
-		currentTemperature = currentTemperature;
+		TemperatureSensor.currentTemperature = currentTemperature;
 	}
 }
